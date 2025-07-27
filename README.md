@@ -13,7 +13,7 @@ Live site: [your-username.github.io/privacy-policy-gen](https://your-username.gi
 - 📝 **Editable Policies** – Save, edit, and version your policies
 - 📄 **Hosted & Shareable** – Share public links or embed in your site
 - 🧾 **Export Options** – Download in HTML, PDF, or Markdown (paid tier)
-- 💸 **Stripe Subscriptions** – Optional paid plan for extra features (via Supabase Edge Functions)
+- 💸 **Stripe Subscriptions** – Paid plan for extra features (via Supabase Edge Functions)
 
 ---
 
@@ -21,13 +21,17 @@ Live site: [your-username.github.io/privacy-policy-gen](https://your-username.gi
 
 ```
 privacy-policy-gen/
-├── public/             # Static assets
+├── public/             
 ├── src/
+│   ├── assets/
+│   ├── components/
 │   ├── pages/          # index.html, dashboard.html, etc.
-│   ├── components/     # Header, Footer, PolicyForm, etc.
 │   ├── scripts/        # JS: auth.js, ai.js, policies.js
-│   └── styles/         # Tailwind or CSS
-├── supabase/           # DB schema, edge functions, Stripe webhooks
+│   └── styles/
+├── supabase/
+│   ├── schema.sql      # DB schema for users, policies, subscriptions
+│   └── edge-functions/
+│       └── stripe-webhook.ts
 ├── .github/workflows/  # GitHub Actions deploy to Pages
 ├── .env.example
 ├── README.md
@@ -46,7 +50,7 @@ cd privacy-policy-gen
 
 ### 2. Set up your environment
 - Copy `.env.example` to `.env`
-- Fill in your Supabase + OpenAI + Stripe keys
+- Fill in your Supabase, OpenAI, and Stripe keys
 
 ### 3. Install dependencies
 ```bash
@@ -77,12 +81,24 @@ Configure prompts in `src/scripts/ai.js`.
 
 ## 🗄️ Supabase Schema
 
-Tables:
+### Tables
 - `users` – via Supabase Auth
 - `policies` – stores user policy drafts and content
-- `subscriptions` – tracks premium plan users
+- `subscriptions` – tracks premium plan users and Stripe data
 
-See `supabase/schema.sql` for details.
+See `supabase/schema.sql` for full schema.
+
+---
+
+## 💸 Stripe Billing (Optional)
+
+Stripe webhook logic scaffolded in:
+
+```ts
+// supabase/edge-functions/stripe-webhook.ts
+```
+
+Events like `checkout.session.completed` and `invoice.payment_succeeded` can be handled here.
 
 ---
 
